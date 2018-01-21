@@ -22,11 +22,19 @@ git clone https://github.com/maaaaz/webscreenshot.git $dependencies_dir/webscree
 #wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $dependencies_dir/phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2
 #tar xvjf $dependencies_dir/phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /usr/local/share/
 #ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/
-    
- # Install Nmap
-git clone https://github.com/nmap/nmap.git $dependencies_dir/nmap
-cd $dependencies_dir/nmap;
-./configure;
-make;
-make install;
-cd ../../;
+
+# Install Nmap
+# Checks if nmap is already installed on the system,
+# If installed, this creates a symbolic link of existing nmap to the dependencies directory.
+# If nmap isn't installed then it will clone it from github and gets installed.
+if [ -x "$(command -v nmap)" ]; then
+  mkdir $dependencies_dir/nmap;
+  ln -s "$(command -v nmap)" $dependencies_dir/nmap/;
+else
+  git clone https://github.com/nmap/nmap.git $dependencies_dir/nmap
+  cd $dependencies_dir/nmap;
+  ./configure;
+  make;
+  make install;
+  cd ../../;
+fi
